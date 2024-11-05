@@ -1,4 +1,4 @@
-	.globl isPrimeAssembly
+.globl isPrimeAssembly
 
 isPrimeAssembly: // Same as primeIterator()
 	// Your code for iterating through arrays here
@@ -12,7 +12,7 @@ isPrimeAssembly: // Same as primeIterator()
 	mov x4, #0 // Initialize as x4=index=0
 
 iterate: 
-	ldr x19, [x0, x4, lsl #3] // Load value from original array (x0)
+	ldr x19, [x0, x4, lsl #3] // Load value from original array (x0), using lsl to use a multiple of 8
 	// x19 is going to be our n value
 	bl isPrime // Call isPrime sub-function, branch to label
 
@@ -25,7 +25,7 @@ storeComposite:
 	b nextIndex // Branch to calculate next index
 
 nextIndex:
-	add x4, x4, #1 // x4 is increased by 8 to access the next byte using the str/ldr (This is the next index)
+	add x4, x4, #1 // Index=x4+=1, increase index by 1
 	cmp x3, x4 // Compare length of original array to altered x4 index (Index that is not a multiple of 8)
 	b.ne iterate // Continue iterating until all array values are accessed
 	mov x30, x20 // Reload value of branch to x30
@@ -43,14 +43,14 @@ loopOne:
 
 	udiv x11, x19, x9 // This line computes x11 = quotient = n / i 
 	msub x12, x11, x9, x19 // This line computes x12 = x19 - x11 * x9 = n - q*i
-	cbz x12, returnZero
-	add x9, x9, #1
-	b loopOne
+	cbz x12, returnZero // If x12 reaches 0, go to returnZero label
+	add x9, x9, #1 // x9=i+=1, increase i by 1
+	b loopOne // Go back to loopOne label to keep calculating
 
 returnOne:
-	mov x6, #1
-	br x30
+	mov x6, #1 // Set x6 to 1 for storing into array
+	br x30 // Branch to last link to store a Prime
 
 returnZero:
-	mov x6, #0
-	br x30
+	mov x6, #0 // Set x6 to 0 for storing into array
+	br x30 // Branch to last link to store a Composite
